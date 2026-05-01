@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MadixSystems CRM Dashboard</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#fff5f8;color:#3b1f2b}
+header{background:linear-gradient(135deg,#ffd6e7,#f4a6c4);padding:18px 25px;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:24px}
+.settings-btn{font-size:24px;background:white;color:#d94f8c;border:none;border-radius:50%;width:45px;height:45px;cursor:pointer}
+.container{padding:25px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:15px;margin-bottom:25px}
+.stat,.panel,.card{background:white;border-radius:16px;box-shadow:0 5px 18px rgba(0,0,0,.08)}
+.stat{padding:18px;text-align:center}
+.stat h2{margin:0;color:#d94f8c}
+.panel{padding:20px;margin-bottom:25px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #f0b8cf;border-radius:10px}
+button{background:#d94f8c;color:white;border:none;padding:12px 16px;border-radius:10px;font-weight:bold;cursor:pointer}
+button:hover{background:#bd3f78}
+.sheet-btn{background:#34a853}
+.kanban{display:grid;grid-template-columns:repeat(5,minmax(240px,1fr));gap:16px;overflow-x:auto;padding-bottom:15px}
+.column{background:#ffe1ef;border-radius:18px;padding:12px;min-height:350px}
+.column h3{text-align:center;margin:5px 0 12px}
+.card{padding:15px;margin-bottom:12px;cursor:grab;border-left:6px solid #d94f8c}
+.card small{color:#777}
+.card-actions{display:flex;gap:8px;margin-top:10px}
+.card-actions button{padding:8px;font-size:12px}
+.delete{background:#777}
+.sidebar{position:fixed;right:-330px;top:0;width:320px;height:100%;background:white;box-shadow:-5px 0 20px rgba(0,0,0,.15);padding:25px;transition:.3s;z-index:10}
+.sidebar.open{right:0}
+.close{float:right;background:#eee;color:#333}
+label{font-weight:bold;font-size:13px}
+@media(max-width:800px){.kanban{grid-template-columns:repeat(5,240px)}}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>MadixSystems CRM</h1>
+    <p style="margin:3px 0;">Mini GHL-style client pipeline dashboard</p>
+  </div>
+  <button class="settings-btn" onclick="toggleSettings()">⚙️</button>
+</header>
+
+<div class="sidebar" id="settingsSidebar">
+  <button class="close" onclick="toggleSettings()">X</button>
+  <h2>Settings</h2>
+
+  <label>Google Apps Script URL</label>
+  <input id="scriptUrl" placeholder="Paste Google Sheets Script URL">
+
+  <label>Brand Name</label>
+  <input id="brandName" value="MadixSystems">
+
+  <label>Dashboard Note</label>
+  <textarea id="dashboardNote" placeholder="Example: Follow up with hot leads daily."></textarea>
+
+  <button onclick="saveSettings()">Save Settings</button>
+</div>
+
+<div class="container">
+
+  <div class="stats">
+    <div class="stat"><h2 id="total">0</h2><p>Total Leads</p></div>
+    <div class="stat"><h2 id="newCount">0</h2><p>New</p></div>
+    <div class="stat"><h2 id="followCount">0</h2><p>Follow-Up</p></div>
+    <div class="stat"><h2 id="closedCount">0</h2><p>Closed</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Add Client / Lead</h2>
+
+    <div class="grid">
+      <input id="name" placeholder="Client Name">
+      <input id="email" placeholder="Email">
+      <input id="phone" placeholder="Phone / WhatsApp">
+      <input id="source" placeholder="Source: LinkedIn, Reddit, Facebook">
+    </div>
+
+    <br>
+
+    <div class="grid">
+      <select id="service">
+        <option>CRM Management</option>
+        <option>Automation Support</option>
+        <option>Social Media Content</option>
+        <option>VA Support</option>
+        <option>Sales / Cold Calling</option>
+      </select>
+
+      <select id="package">
+        <option>Starter Support - $99 / 1 Month</option>
+        <option>Growth Support - $249 / 3 Months</option>
+        <option>Premium Monthly - $399 / Month</option>
+        <option>Social Media Content - $199 / Month</option>
+      </select>
+
+      <select id="status">
+        <option>New</option>
+        <option>Contacted</option>
+        <option>Follow-Up</option>
+        <option>Won</option>
+        <option>Lost</option>
+      </select>
+
+      <input type="date" id="followUp">
+    </div>
+
+    <br>
+    <textarea id="notes" placeholder="Notes / conversation summary"></textarea>
+    <br><br>
+
+    <button onclick="addClient()">Add to Pipeline</button>
+    <button class="sheet-btn" onclick="pushAllToGoogleSheets()">Push All to Google Sheets</button>
+  </div>
+
+  <h2>Client Pipeline</h2>
+
+  <div class="kanban">
+    <div class="column" ondrop="drop(event,'New')" ondragover="allowDrop(event)">
+      <h3>New</h3><div id="New"></div>
+    </div>
+
+    <div class="column" ondrop="drop(event,'Contacted')" ondragover="allowDrop(event)">
+      <h3>Contacted</h3><div id="Contacted"></div>
+    </div>
+
+    <div class="column" ondrop="drop(event,'Follow-Up')" ondragover="allowDrop(event)">
+      <h3>Follow-Up</h3><div id="Follow-Up"></div>
+    </div>
+
+    <div class="column" ondrop="drop(event,'Won')" ondragover="allowDrop(event)">
+      <h3>Won</h3><div id="Won"></div>
+    </div>
+
+    <div class="column" ondrop="drop(event,'Lost')" ondragover="allowDrop(event)">
+      <h3>Lost</h3><div id="Lost"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let clients = JSON.parse(localStorage.getItem("clients")) || [];
+let settings = JSON.parse(localStorage.getItem("settings")) || {};
+
+document.getElementById("scriptUrl").value = settings.scriptUrl || "";
+document.getElementById("brandName").value = settings.brandName || "MadixSystems";
+document.getElementById("dashboardNote").value = settings.dashboardNote || "";
+
+function toggleSettings(){
+  document.getElementById("settingsSidebar").classList.toggle("open");
+}
+
+function saveSettings(){
+  settings = {
+    scriptUrl: document.getElementById("scriptUrl").value,
+    brandName: document.getElementById("brandName").value,
+    dashboardNote: document.getElementById("dashboardNote").value
+  };
+  localStorage.setItem("settings", JSON.stringify(settings));
+  alert("Settings saved.");
+}
+
+function addClient(){
+  const client = {
+    id: Date.now(),
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    source: document.getElementById("source").value,
+    service: document.getElementById("service").value,
+    package: document.getElementById("package").value,
+    status: document.getElementById("status").value,
+    followUp: document.getElementById("followUp").value,
+    notes: document.getElementById("notes").value,
+    dateAdded: new Date().toLocaleString()
+  };
+
+  if(!client.name){
+    alert("Please add client name.");
+    return;
+  }
+
+  clients.push(client);
+  saveClients();
+  clearForm();
+  render();
+}
+
+function clearForm(){
+  ["name","email","phone","source","followUp","notes"].forEach(id => document.getElementById(id).value = "");
+}
+
+function saveClients(){
+  localStorage.setItem("clients", JSON.stringify(clients));
+}
+
+function render(){
+  ["New","Contacted","Follow-Up","Won","Lost"].forEach(status => {
+    document.getElementById(status).innerHTML = "";
+  });
+
+  clients.forEach(client => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.draggable = true;
+    card.ondragstart = e => e.dataTransfer.setData("clientId", client.id);
+
+    card.innerHTML = `
+      <strong>${client.name}</strong><br>
+      <small>${client.email || ""}</small><br>
+      <small>${client.phone || ""}</small>
+      <p><b>Service:</b> ${client.service}</p>
+      <p><b>Package:</b> ${client.package}</p>
+      <p><b>Source:</b> ${client.source || "N/A"}</p>
+      <p><b>Follow-up:</b> ${client.followUp || "Not set"}</p>
+      <small>${client.notes || ""}</small>
+      <div class="card-actions">
+        <button onclick="pushOneToGoogleSheets(${client.id})">Push</button>
+        <button class="delete" onclick="deleteClient(${client.id})">Delete</button>
+      </div>
+    `;
+
+    document.getElementById(client.status).appendChild(card);
+  });
+
+  updateStats();
+}
+
+function allowDrop(e){
+  e.preventDefault();
+}
+
+function drop(e,newStatus){
+  e.preventDefault();
+  const id = Number(e.dataTransfer.getData("clientId"));
+  clients = clients.map(c => c.id === id ? {...c, status:newStatus} : c);
+  saveClients();
+  render();
+}
+
+function deleteClient(id){
+  clients = clients.filter(c => c.id !== id);
+  saveClients();
+  render();
+}
+
+function updateStats(){
+  document.getElementById("total").innerText = clients.length;
+  document.getElementById("newCount").innerText = clients.filter(c => c.status === "New").length;
+  document.getElementById("followCount").innerText = clients.filter(c => c.status === "Follow-Up").length;
+  document.getElementById("closedCount").innerText = clients.filter(c => c.status === "Won").length;
+}
+
+function pushOneToGoogleSheets(id){
+  const url = document.getElementById("scriptUrl").value;
+  if(!url){
+    alert("Add your Google Apps Script URL in settings first.");
+    return;
+  }
+
+  const client = clients.find(c => c.id === id);
+
+  fetch(url, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify(client)
+  });
+
+  alert("Client pushed to Google Sheets.");
+}
+
+function pushAllToGoogleSheets(){
+  const url = document.getElementById("scriptUrl").value;
+  if(!url){
+    alert("Add your Google Apps Script URL in settings first.");
+    return;
+  }
+
+  clients.forEach(client => {
+    fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(client)
+    });
+  });
+
+  alert("All clients pushed to Google Sheets.");
+}
+
+render();
+</script>
+
+</body>
+</html>
