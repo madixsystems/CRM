@@ -1,30 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>MadixSystems | May Ann</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MadixSystems | May Ann Oloroso</title>
+
 <style>
-body{font-family:Arial;background:#f5f3ef;text-align:center;padding:50px}
-h1{font-size:32px}
-.btn{padding:12px 20px;background:#c8bfb3;color:#222;text-decoration:none;border-radius:5px}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Georgia', serif;
+}
+
+body {
+  background: #f5f3ef;
+  color: #2b2b2b;
+}
+
+/* HEADER */
+header {
+  background: #eae7e1;
+  text-align: center;
+  padding: 60px 20px;
+  border-bottom: 2px solid #c8bfb3;
+}
+
+.brand {
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: #7a7267;
+  margin-bottom: 10px;
+}
+
+header img {
+  width: 110px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  font-size: 34px;
+  letter-spacing: 2px;
+}
+
+header p {
+  font-size: 17px;
+  color: #555;
+  max-width: 700px;
+  margin: 10px auto;
+}
+
+/* BUTTON */
+.btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 25px;
+  background: #c8bfb3;
+  color: #222;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.btn:hover {
+  background: #b5ab9f;
+}
+
+/* SECTION */
+section {
+  max-width: 1100px;
+  margin: auto;
+  padding: 60px 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border: 1px solid #ddd;
+}
+
+.price {
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* TESTIMONIAL */
+.testimonial img {
+  width: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.stars {
+  color: #b89c5a;
+}
+
+/* CONTACT */
+.contact {
+  background: #eae7e1;
+  padding: 40px;
+  text-align: center;
+  border-top: 2px solid #c8bfb3;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
 </style>
 </head>
 
 <body>
 
-<h1>MadixSystems</h1>
-<p>CRM • Automation • VA Support • Social Media</p>
+<header>
+  <div class="brand">MADIXSYSTEMS</div>
+  <img src="your-photo.jpg">
+  <h1>May Ann Oloroso</h1>
+  <p>I help businesses organize leads, automate follow-ups, and convert more clients using CRM systems and smart workflows.</p>
+  <a href="#packages" class="btn">View Packages</a>
+</header>
 
-<br>
+<section>
+  <h2>About Me</h2>
+  <p style="text-align:center; max-width:800px; margin:auto;">
+    Founder of <strong>MadixSystems</strong>. I specialize in CRM management, automation, sales support, and social media systems to help businesses scale efficiently.
+  </p>
+  <p style="text-align:center;">
+    <a href="May-Ann-Oloroso-Resume.pdf" download class="btn">Download Resume</a>
+  </p>
+</section>
 
-<a href="dashboard.html" class="btn">Open My CRM Dashboard</a>
+<section>
+  <h2>Services by MadixSystems</h2>
+  <div class="cards">
+    <div class="card"><h3>CRM Systems</h3><p>Pipeline tracking, GoHighLevel, HubSpot.</p></div>
+    <div class="card"><h3>Automation</h3><p>Workflows, follow-ups, lead nurturing.</p></div>
+    <div class="card"><h3>Sales Support</h3><p>Cold calling & appointment setting.</p></div>
+    <div class="card"><h3>Social Media</h3><p>Content creation & posting.</p></div>
+  </div>
+</section>
 
-<br><br>
+<section id="packages">
+  <h2>MadixSystems Packages</h2>
+  <div class="cards">
 
-<p>Hi, I’m May Ann. I help businesses manage leads, automate follow-ups, and organize operations.</p>
+    <div class="card">
+      <h3>Starter Support</h3>
+      <p class="price">$99 / 1 Month</p>
+      <ul>
+        <li>Admin tasks</li>
+        <li>CRM cleanup</li>
+        <li>Basic support</li>
+      </ul>
+      <a href="YOUR_PAYMENT_LINK" class="btn">Pay Now</a>
+    </div>
 
-<br>
+    <div class="card">
+      <h3>Growth Support</h3>
+      <p class="price">$249 / 3 Months</p>
+      <ul>
+        <li>CRM updates</li>
+        <li>Lead follow-ups</li>
+        <li>Reports</li>
+      </ul>
+      <a href="YOUR_PAYMENT_LINK" class="btn">Pay Now</a>
+    </div>
 
-<a href="May-Ann-Oloroso-Resume.pdf" class="btn">Download Resume</a>
+    <div class="card">
+      <h3>Premium Monthly</h3>
+      <p class="price">$399 / Month</p>
+      <ul>
+        <li>Full VA support</li>
+        <li>Automation</li>
+        <li>Sales help</li>
+      </ul>
+      <a href="YOUR_PAYMENT_LINK" class="btn">Pay Now</a>
+    </div>
+
+    <div class="card">
+      <h3>Social Media Content</h3>
+      <p class="price">$199 / Month</p>
+      <ul>
+        <li>12 Canva graphics</li>
+        <li>12 captions</li>
+        <li>Content calendar</li>
+      </ul>
+      <a href="YOUR_PAYMENT_LINK" class="btn">Pay Now</a>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Sample Reviews</h2>
+  <div class="cards">
+    <div class="card testimonial">
+      <img src="https://i.pravatar.cc/100?img=1">
+      <div class="stars">★★★★★</div>
+      <p>“MadixSystems helped streamline our CRM.”</p>
+    </div>
+    <div class="card testimonial">
+      <img src="https://i.pravatar.cc/100?img=2">
+      <div class="stars">★★★★★</div>
+      <p>“Very reliable and organized.”</p>
+    </div>
+    <div class="card testimonial">
+      <img src="https://i.pravatar.cc/100?img=3">
+      <div class="stars">★★★★★</div>
+      <p>“Great support and communication.”</p>
+    </div>
+  </div>
+</section>
+
+<section class="contact">
+  <h2>Contact MadixSystems</h2>
+  <p>Email: may@ezloandocs.com</p>
+  <p>Phone: 310-695-6174</p>
+
+  <form>
+    <input type="text" placeholder="Your Name">
+    <input type="email" placeholder="Your Email">
+    <textarea placeholder="Message"></textarea>
+    <button class="btn">Send</button>
+  </form>
+</section>
+
+<footer>
+  <p>© 2026 MadixSystems | May Ann Oloroso</p>
+</footer>
 
 </body>
 </html>
